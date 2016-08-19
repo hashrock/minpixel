@@ -4,6 +4,7 @@ import * as Vue from "vue";
 import * as PIXI from "pixi.js"
 
 var renderer = PIXI.autoDetectRenderer(160, 160 + 10, { antialias: true });
+PIXI.SCALE_MODES.DEFAULT = PIXI.SCALE_MODES.NEAREST
 
 //https://androidarts.com/palette/16pal.htm
 var colors = [
@@ -27,7 +28,9 @@ var colors = [
 
 renderer.view.oncontextmenu = function (e) {
   e.preventDefault();
-  console.log([e.offsetX, e.offsetY])
+  var m = convertPoint(new PIXI.Point(e.offsetX, e.offsetY))
+  //TODO getPixelColor
+  //console.log([e.offsetX, e.offsetY])
 };
 
 var gridSize = 160 / 16;
@@ -75,10 +78,13 @@ var setPixel = function (ctx: PIXI.Graphics, pointM: PIXI.Point) {
   ctx.endFill();
 }
 
+function convertPoint(point: PIXI.Point): PIXI.Point{
+  return new PIXI.Point(Math.floor(point.x / gridSize), Math.floor(point.y / gridSize))
+}
+
 var mouseEvent = function (iData: any) { //InteractionDataに出来なかった
   var point: PIXI.Point = iData.data.getLocalPosition(iData.target);
-  var pointM: PIXI.Point =
-    new PIXI.Point(Math.floor(point.x / gridSize), Math.floor(point.y / gridSize))
+  var pointM: PIXI.Point = convertPoint(point);
   if (pointM.y > 15) {
     penColor = colors[pointM.x];
     drawPallete(pallete)
