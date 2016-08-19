@@ -5,6 +5,26 @@ import * as PIXI from "pixi.js"
 
 var renderer = PIXI.autoDetectRenderer(160, 160, { antialias: true });
 
+//https://androidarts.com/palette/16pal.htm
+var colors = [
+  0x000000,
+  0x9D9D9D,
+  0xFFFFFF,
+  0xBE2633,
+  0xE06F8B,
+  0x493C2B,
+  0xA46422,
+  0xEB8931,
+  0xF7E26B,
+  0x2F484E,
+  0x44891A,
+  0xA3CE27,
+  0x1B2632,
+  0x005784,
+  0x31A2F2,
+  0xB2DCEF,
+]
+
 renderer.view.oncontextmenu = function (e) {
     e.preventDefault();
 	console.log([e.offsetX, e.offsetY])
