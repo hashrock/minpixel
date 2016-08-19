@@ -32,7 +32,7 @@ renderer.view.oncontextmenu = function (e) {
 
 var gridSize = 160 / 16;
 var penColor = 0x000000;
-function drawGrid(ctx: any){
+function drawGrid(ctx: PIXI.Graphics){
 
 	for(var i = 0; i < 16; i++){
 		for(var j = 0; j < 16; j++){
@@ -46,37 +46,35 @@ function drawGrid(ctx: any){
 
 var stage:PIXI.Container = new PIXI.Container();
 stage.interactive = true;
-var ctx = new PIXI.Graphics();
+var ctx: PIXI.Graphics = new PIXI.Graphics();
 drawGrid(ctx);
 stage.addChild(ctx);
 
-var setPixel = function(ctx: any, pointM: any){
+var setPixel = function(ctx: PIXI.Graphics, pointM: PIXI.Point){
 	ctx.beginFill(penColor);
 	ctx.drawRect(pointM.x * gridSize, pointM.y *  gridSize, gridSize, gridSize);
 	ctx.endFill();
 }
 
-var mouseEvent = function(iData: any){
-	var point = iData.data.getLocalPosition(iData.target);
-	var pointM = {
-		x : Math.floor(point.x / gridSize),
-		y : Math.floor(point.y / gridSize)
-	}
+var mouseEvent = function(iData: any){ //InteractionDataに出来なかった
+	var point:PIXI.Point = iData.data.getLocalPosition(iData.target);
+	var pointM: PIXI.Point = 
+    new PIXI.Point(Math.floor(point.x / gridSize), Math.floor(point.y / gridSize))
 	setPixel(ctx, pointM);
 }
 
 var mousedown = false;
 
-stage.on("mousedown", function(iData: any){
+stage.on("mousedown", function(iData: PIXI.interaction.InteractionData){
 	mouseEvent(iData);
 	mousedown = true;
 })
-stage.on("mousemove", function(iData: any){
+stage.on("mousemove", function(iData: PIXI.interaction.InteractionData){
 	if(mousedown){
 		mouseEvent(iData);
 	}
 })
-stage.on("mouseup", function(iData: any){
+stage.on("mouseup", function(iData: PIXI.interaction.InteractionData){
 	mousedown = false;
 })
 
