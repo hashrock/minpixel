@@ -116,12 +116,11 @@ function animate() {
   },
   template: `
     <div>
-      <div class="container"></div>
     </div>
   `
 })
 export class App extends Vue {
   ready() {
-    document.querySelector(".container").appendChild(renderer.view)
+    this.$el.appendChild(renderer.view)
   }
 }
