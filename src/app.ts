@@ -26,63 +26,63 @@ var colors = [
 ]
 
 renderer.view.oncontextmenu = function (e) {
-    e.preventDefault();
-	console.log([e.offsetX, e.offsetY])
+  e.preventDefault();
+  console.log([e.offsetX, e.offsetY])
 };
 
 var gridSize = 160 / 16;
 var penColor = 0x000000;
-function drawGrid(ctx: PIXI.Graphics){
+function drawGrid(ctx: PIXI.Graphics) {
 
-	for(var i = 0; i < 16; i++){
-		for(var j = 0; j < 16; j++){
-			var fill = (i % 2 === 0 && j % 2 === 0 || i % 2 === 1 && j % 2 === 1) ? 0xEEEEEE : 0xCCCCCC;
-			ctx.beginFill(fill);
-			ctx.drawRect(i * gridSize, j *  gridSize, gridSize, gridSize);
-			ctx.endFill();
-		}
-	}
+  for (var i = 0; i < 16; i++) {
+    for (var j = 0; j < 16; j++) {
+      var fill = (i % 2 === 0 && j % 2 === 0 || i % 2 === 1 && j % 2 === 1) ? 0xEEEEEE : 0xCCCCCC;
+      ctx.beginFill(fill);
+      ctx.drawRect(i * gridSize, j * gridSize, gridSize, gridSize);
+      ctx.endFill();
+    }
+  }
 }
 
-var stage:PIXI.Container = new PIXI.Container();
+var stage: PIXI.Container = new PIXI.Container();
 stage.interactive = true;
 var ctx: PIXI.Graphics = new PIXI.Graphics();
 drawGrid(ctx);
 stage.addChild(ctx);
 
-var setPixel = function(ctx: PIXI.Graphics, pointM: PIXI.Point){
-	ctx.beginFill(penColor);
-	ctx.drawRect(pointM.x * gridSize, pointM.y *  gridSize, gridSize, gridSize);
-	ctx.endFill();
+var setPixel = function (ctx: PIXI.Graphics, pointM: PIXI.Point) {
+  ctx.beginFill(penColor);
+  ctx.drawRect(pointM.x * gridSize, pointM.y * gridSize, gridSize, gridSize);
+  ctx.endFill();
 }
 
-var mouseEvent = function(iData: any){ //InteractionDataに出来なかった
-	var point:PIXI.Point = iData.data.getLocalPosition(iData.target);
-	var pointM: PIXI.Point = 
+var mouseEvent = function (iData: any) { //InteractionDataに出来なかった
+  var point: PIXI.Point = iData.data.getLocalPosition(iData.target);
+  var pointM: PIXI.Point =
     new PIXI.Point(Math.floor(point.x / gridSize), Math.floor(point.y / gridSize))
-	setPixel(ctx, pointM);
+  setPixel(ctx, pointM);
 }
 
 var mousedown = false;
 
-stage.on("mousedown", function(iData: PIXI.interaction.InteractionData){
-	mouseEvent(iData);
-	mousedown = true;
+stage.on("mousedown", function (iData: PIXI.interaction.InteractionData) {
+  mouseEvent(iData);
+  mousedown = true;
 })
-stage.on("mousemove", function(iData: PIXI.interaction.InteractionData){
-	if(mousedown){
-		mouseEvent(iData);
-	}
+stage.on("mousemove", function (iData: PIXI.interaction.InteractionData) {
+  if (mousedown) {
+    mouseEvent(iData);
+  }
 })
-stage.on("mouseup", function(iData: PIXI.interaction.InteractionData){
-	mousedown = false;
+stage.on("mouseup", function (iData: PIXI.interaction.InteractionData) {
+  mousedown = false;
 })
 
 animate();
 
 function animate() {
-	renderer.render(stage);
-	requestAnimationFrame( animate );
+  renderer.render(stage);
+  requestAnimationFrame(animate);
 }
 
 @Component({
@@ -96,7 +96,7 @@ function animate() {
   `
 })
 export class App extends Vue {
-  ready(){
+  ready() {
     document.querySelector(".container").appendChild(renderer.view)
   }
 }
