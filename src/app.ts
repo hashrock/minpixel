@@ -3,7 +3,7 @@ import * as Vue from "vue";
 
 import * as PIXI from "pixi.js"
 
-var renderer = PIXI.autoDetectRenderer(160, 160, { antialias: true });
+var renderer = PIXI.autoDetectRenderer(160, 160 + 10, { antialias: true });
 
 //https://androidarts.com/palette/16pal.htm
 var colors = [
@@ -33,7 +33,6 @@ renderer.view.oncontextmenu = function (e) {
 var gridSize = 160 / 16;
 var penColor = 0x000000;
 function drawGrid(ctx: PIXI.Graphics) {
-
   for (var i = 0; i < 16; i++) {
     for (var j = 0; j < 16; j++) {
       var fill = (i % 2 === 0 && j % 2 === 0 || i % 2 === 1 && j % 2 === 1) ? 0xEEEEEE : 0xCCCCCC;
@@ -43,12 +42,25 @@ function drawGrid(ctx: PIXI.Graphics) {
     }
   }
 }
+function drawPallete(ctx: PIXI.Graphics){
+  for (var i = 0; i < 16; i++) {
+    var fill = colors[i];
+    ctx.beginFill(fill);
+    ctx.drawRect(i * gridSize, 0, gridSize, gridSize);
+    ctx.endFill();
+  }
+}
+
 
 var stage: PIXI.Container = new PIXI.Container();
 stage.interactive = true;
-var ctx: PIXI.Graphics = new PIXI.Graphics();
-drawGrid(ctx);
-stage.addChild(ctx);
+var canvas: PIXI.Graphics = new PIXI.Graphics();
+var pallete: PIXI.Graphics = new PIXI.Graphics();
+drawGrid(canvas);
+stage.addChild(canvas);
+drawPallete(pallete)
+pallete.y = 160;
+stage.addChild(pallete);
 
 var setPixel = function (ctx: PIXI.Graphics, pointM: PIXI.Point) {
   ctx.beginFill(penColor);
@@ -60,7 +72,7 @@ var mouseEvent = function (iData: any) { //InteractionDataに出来なかった
   var point: PIXI.Point = iData.data.getLocalPosition(iData.target);
   var pointM: PIXI.Point =
     new PIXI.Point(Math.floor(point.x / gridSize), Math.floor(point.y / gridSize))
-  setPixel(ctx, pointM);
+  setPixel(canvas, pointM);
 }
 
 var mousedown = false;
