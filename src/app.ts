@@ -42,11 +42,18 @@ function drawGrid(ctx: PIXI.Graphics) {
     }
   }
 }
-function drawPallete(ctx: PIXI.Graphics){
+function drawPallete(ctx: PIXI.Graphics) {
+  ctx.clear();
   for (var i = 0; i < 16; i++) {
     var fill = colors[i];
+    var offsetTop = 2;
+    ctx.lineStyle(1, 0x000000, 1)
+    if (penColor === fill) {
+      ctx.lineStyle(1, 0xFFFFFF, 1)
+      offsetTop = 0;
+    }
     ctx.beginFill(fill);
-    ctx.drawRect(i * gridSize, 0, gridSize, gridSize);
+    ctx.drawRect(i * gridSize, offsetTop, gridSize, gridSize);
     ctx.endFill();
   }
 }
@@ -72,6 +79,12 @@ var mouseEvent = function (iData: any) { //InteractionDataに出来なかった
   var point: PIXI.Point = iData.data.getLocalPosition(iData.target);
   var pointM: PIXI.Point =
     new PIXI.Point(Math.floor(point.x / gridSize), Math.floor(point.y / gridSize))
+  if (pointM.y > 15) {
+    penColor = colors[pointM.x];
+    drawPallete(pallete)
+    return;
+  }
+
   setPixel(canvas, pointM);
 }
 
@@ -90,6 +103,7 @@ stage.on("mouseup", function (iData: PIXI.interaction.InteractionData) {
   mousedown = false;
 })
 
+
 animate();
 
 function animate() {
@@ -102,8 +116,7 @@ function animate() {
   },
   template: `
     <div>
-      <h1>Component</h1>
-      	<div class="container"></div>
+      <div class="container"></div>
     </div>
   `
 })
