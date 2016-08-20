@@ -27,6 +27,9 @@ var colors = [
 
 renderer.view.oncontextmenu = function (e) {
   e.preventDefault();
+  var point = convertPoint(new PIXI.Point(e.offsetX, e.offsetY))
+  penColor = buffer.getPixel(point.x, point.y);
+  console.log(penColor);
   console.log([e.offsetX, e.offsetY])
 };
 
@@ -91,10 +94,13 @@ function setPixel(ctx: PIXI.Graphics, pointM: PIXI.Point, color: number) {
   ctx.endFill();
 }
 
+function convertPoint(point: PIXI.Point){
+  return new PIXI.Point(Math.floor(point.x / gridSize), Math.floor(point.y / gridSize))
+}
+
 var mouseEvent = function (iData: any) { //InteractionDataに出来なかった
   var point: PIXI.Point = iData.data.getLocalPosition(iData.target);
-  var pointM: PIXI.Point =
-    new PIXI.Point(Math.floor(point.x / gridSize), Math.floor(point.y / gridSize))
+  var pointM: PIXI.Point = convertPoint(point);
   if (pointM.y > 15) {
     penColor = colors[pointM.x];
     drawPallete(pallete)
