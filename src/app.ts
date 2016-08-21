@@ -1,7 +1,7 @@
 import Component from 'vue-class-component'
 import * as Vue from "vue";
-
 import * as PIXI from "pixi.js"
+import {ImageBuffer} from "./image-buffer"
 
 var renderer = PIXI.autoDetectRenderer(160, 160 + 10, { antialias: true });
 PIXI.SCALE_MODES.DEFAULT = PIXI.SCALE_MODES.NEAREST
@@ -28,9 +28,10 @@ var colors = [
 
 renderer.view.oncontextmenu = function (e) {
   e.preventDefault();
-  var m = convertPoint(new PIXI.Point(e.offsetX, e.offsetY))
-  //TODO getPixelColor
-  //console.log([e.offsetX, e.offsetY])
+  var point = convertPoint(new PIXI.Point(e.offsetX, e.offsetY))
+  penColor = buffer.getPixel(point.x, point.y);
+  console.log(penColor);
+  console.log([e.offsetX, e.offsetY])
 };
 
 var gridSize = 160 / 16;
@@ -45,6 +46,18 @@ function drawGrid(ctx: PIXI.Graphics) {
     }
   }
 }
+
+function drawFromBuffer(ctx: PIXI.Graphics, buffer: ImageBuffer){
+  for(var i = 0; i < 16; i++){
+    for(var j = 0; j < 16; j++){
+      var color = buffer.getPixel(j, i);
+      if(color >= 0){
+        setPixel(ctx, new PIXI.Point(j, i), color)
+      }
+    }
+  }
+}
+
 function drawPallete(ctx: PIXI.Graphics) {
   ctx.clear();
   for (var i = 0; i < 16; i++) {
@@ -65,20 +78,24 @@ function drawPallete(ctx: PIXI.Graphics) {
 var stage: PIXI.Container = new PIXI.Container();
 stage.interactive = true;
 var canvas: PIXI.Graphics = new PIXI.Graphics();
+var background: PIXI.Graphics = new PIXI.Graphics();
 var pallete: PIXI.Graphics = new PIXI.Graphics();
-drawGrid(canvas);
+var buffer: ImageBuffer = new ImageBuffer()
+
+drawGrid(background);
+stage.addChild(background);
 stage.addChild(canvas);
 drawPallete(pallete)
 pallete.y = 160;
 stage.addChild(pallete);
 
-var setPixel = function (ctx: PIXI.Graphics, pointM: PIXI.Point) {
-  ctx.beginFill(penColor);
+function setPixel(ctx: PIXI.Graphics, pointM: PIXI.Point, color: number) {
+  ctx.beginFill(color);
   ctx.drawRect(pointM.x * gridSize, pointM.y * gridSize, gridSize, gridSize);
   ctx.endFill();
 }
 
-function convertPoint(point: PIXI.Point): PIXI.Point{
+function convertPoint(point: PIXI.Point){
   return new PIXI.Point(Math.floor(point.x / gridSize), Math.floor(point.y / gridSize))
 }
 
@@ -90,8 +107,9 @@ var mouseEvent = function (iData: any) { //InteractionDataに出来なかった
     drawPallete(pallete)
     return;
   }
-
-  setPixel(canvas, pointM);
+  buffer.setPixel(pointM.x, pointM.y, penColor);
+  canvas.clear();
+  drawFromBuffer(canvas, buffer);
 }
 
 var mousedown = false;
