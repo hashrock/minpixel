@@ -26,7 +26,8 @@
     "ts-loader": "^0.8.2",
     "typescript": "^2.0.0",
     "vue": "^1.0.26",
-    "vue-class-component": "^3.2.0"
+    "vue-class-component": "^3.2.0",
+    "webpack": "^2.3.3"
   },
   "scripts": {
     "build": "npm-run-all --parallel build:*",
