@@ -7,11 +7,11 @@ import Vue from "vue";
 import * as PIXI from "pixi.js";
 import { ImageBuffer } from "./image-buffer";
 
-var renderer = PIXI.autoDetectRenderer(160, 160 + 10, { antialias: true });
-PIXI.SCALE_MODES.DEFAULT = PIXI.SCALE_MODES.NEAREST;
+const renderer = PIXI.autoDetectRenderer(160, 160 + 10, { antialias: true });
+PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
 //https://androidarts.com/palette/16pal.htm
-var colors = [
+const colors = [
   0x000000,
   0x9d9d9d,
   0xffffff,
@@ -32,18 +32,18 @@ var colors = [
 
 renderer.view.oncontextmenu = function(e) {
   e.preventDefault();
-  var point = convertPoint(new PIXI.Point(e.offsetX, e.offsetY));
+  const point = convertPoint(new PIXI.Point(e.offsetX, e.offsetY));
   penColor = buffer.getPixel(point.x, point.y);
   console.log(penColor);
   console.log([e.offsetX, e.offsetY]);
 };
 
-var gridSize = 160 / 16;
-var penColor = 0x000000;
+const gridSize = 160 / 16;
+let penColor = 0x000000;
 function drawGrid(ctx: PIXI.Graphics) {
-  for (var i = 0; i < 16; i++) {
-    for (var j = 0; j < 16; j++) {
-      var fill =
+  for (let i = 0; i < 16; i++) {
+    for (let j = 0; j < 16; j++) {
+      const fill =
         (i % 2 === 0 && j % 2 === 0) || (i % 2 === 1 && j % 2 === 1)
           ? 0xeeeeee
           : 0xcccccc;
@@ -55,9 +55,9 @@ function drawGrid(ctx: PIXI.Graphics) {
 }
 
 function drawFromBuffer(ctx: PIXI.Graphics, buffer: ImageBuffer) {
-  for (var i = 0; i < 16; i++) {
-    for (var j = 0; j < 16; j++) {
-      var color = buffer.getPixel(j, i);
+  for (let i = 0; i < 16; i++) {
+    for (let j = 0; j < 16; j++) {
+      const color = buffer.getPixel(j, i);
       if (color >= 0) {
         setPixel(ctx, new PIXI.Point(j, i), color);
       }
@@ -67,9 +67,9 @@ function drawFromBuffer(ctx: PIXI.Graphics, buffer: ImageBuffer) {
 
 function drawPallete(ctx: PIXI.Graphics) {
   ctx.clear();
-  for (var i = 0; i < 16; i++) {
-    var fill = colors[i];
-    var offsetTop = 2;
+  for (let i = 0; i < 16; i++) {
+    const fill = colors[i];
+    let offsetTop = 2;
     ctx.lineStyle(1, 0x000000, 1);
     if (penColor === fill) {
       ctx.lineStyle(1, 0xffffff, 1);
@@ -81,12 +81,12 @@ function drawPallete(ctx: PIXI.Graphics) {
   }
 }
 
-var stage: PIXI.Container = new PIXI.Container();
+const stage: PIXI.Container = new PIXI.Container();
 stage.interactive = true;
-var canvas: PIXI.Graphics = new PIXI.Graphics();
-var background: PIXI.Graphics = new PIXI.Graphics();
-var pallete: PIXI.Graphics = new PIXI.Graphics();
-var buffer: ImageBuffer = new ImageBuffer();
+const canvas: PIXI.Graphics = new PIXI.Graphics();
+const background: PIXI.Graphics = new PIXI.Graphics();
+const pallete: PIXI.Graphics = new PIXI.Graphics();
+const buffer: ImageBuffer = new ImageBuffer();
 
 drawGrid(background);
 stage.addChild(background);
@@ -108,10 +108,10 @@ function convertPoint(point: PIXI.Point) {
   );
 }
 
-var mouseEvent = function(iData: any) {
+const mouseEvent = function(iData: any) {
   //InteractionDataに出来なかった
-  var point: PIXI.Point = iData.data.getLocalPosition(iData.target);
-  var pointM: PIXI.Point = convertPoint(point);
+  const point: PIXI.Point = iData.data.getLocalPosition(iData.target);
+  const pointM: PIXI.Point = convertPoint(point);
   if (pointM.y > 15) {
     penColor = colors[pointM.x];
     drawPallete(pallete);
@@ -122,7 +122,7 @@ var mouseEvent = function(iData: any) {
   drawFromBuffer(canvas, buffer);
 };
 
-var mousedown = false;
+let mousedown = false;
 
 stage.on("mousedown", function(iData: PIXI.interaction.InteractionData) {
   mouseEvent(iData);
