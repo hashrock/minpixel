@@ -14,11 +14,7 @@
     "typescript": "^3.2.2"
   },
   "scripts": {
-    "build": "npm-run-all --parallel build:*",
-    "dev": "npm-run-all --parallel watch:*",
-    "build:js": "webpack",
-    "watch:js": "webpack -w",
-    "watch:serve": "live-server --ignorePattern=.*\\.ts",
-    "test": "tsc && mocha dist/test.js"
+    "build": "parcel build index.html",
+    "dev": "parcel index.html"
   }
 }

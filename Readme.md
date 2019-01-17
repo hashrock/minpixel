@@ -1,13 +1,9 @@
-
 # minpixel
-
-
 
 ## Installation
 
-    $ npm run dev
+    $ yarn dev
 
 ## License
 
 MIT
-
