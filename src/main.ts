@@ -1,12 +1,10 @@
-import * as Vue from "vue";
-import {sum} from "./lib";
-import {App} from "./app";
+import Vue from "vue";
+import App from "./App";
 
-console.log(sum(1, 2));
+Vue.config.productionTip = false;
 
+/* eslint-disable no-new */
 new Vue({
-  el: "main",
-  components: {
-    "app": App
-  }
-})
+  el: "#app",
+  render: h => h(App)
+});
