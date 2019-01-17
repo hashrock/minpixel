@@ -108,8 +108,11 @@ function convertPoint(point: PIXI.Point) {
   );
 }
 
-const mouseEvent = function(iData: any) {
-  //InteractionDataに出来なかった
+interface LocalInteractionData extends PIXI.interaction.InteractionData {
+  data: any;
+}
+
+const mouseEvent = function(iData: LocalInteractionData) {
   const point: PIXI.Point = iData.data.getLocalPosition(iData.target);
   const pointM: PIXI.Point = convertPoint(point);
   if (pointM.y > 15) {
@@ -124,16 +127,16 @@ const mouseEvent = function(iData: any) {
 
 let mousedown = false;
 
-stage.on("mousedown", function(iData: PIXI.interaction.InteractionData) {
+stage.on("mousedown", function(iData: LocalInteractionData) {
   mouseEvent(iData);
   mousedown = true;
 });
-stage.on("mousemove", function(iData: PIXI.interaction.InteractionData) {
+stage.on("mousemove", function(iData: LocalInteractionData) {
   if (mousedown) {
     mouseEvent(iData);
   }
 });
-stage.on("mouseup", function(iData: PIXI.interaction.InteractionData) {
+stage.on("mouseup", function(iData: LocalInteractionData) {
   mousedown = false;
 });
 
