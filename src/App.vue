@@ -7,7 +7,10 @@ import Vue from "vue";
 import * as PIXI from "pixi.js";
 import { ImageBuffer } from "./image-buffer";
 
-const renderer = PIXI.autoDetectRenderer(160, 160 + 10, { antialias: true });
+const renderer = PIXI.autoDetectRenderer(160, 160 + 10, {
+  antialias: true,
+  preserveDrawingBuffer: true
+});
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
 //https://androidarts.com/palette/16pal.htm
@@ -161,6 +164,42 @@ function resize() {
 }
 window.onresize = resize;
 
+function createCanvasData(ctx: PIXI.Graphics, buffer: ImageBuffer) {
+  for (let i = 0; i < 16; i++) {
+    for (let j = 0; j < 16; j++) {
+      const color = buffer.getPixel(j, i);
+      if (color >= 0) {
+        setPixel(ctx, new PIXI.Point(j, i), color);
+      }
+    }
+  }
+}
+
+async function writeToClipboard(imageBlob: Blob) {
+  try {
+    //@ts-ignore
+    await navigator.clipboard.write([
+      //@ts-ignore
+      new ClipboardItem({
+        "image/png": imageBlob
+      })
+    ]);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+document.oncopy = function() {
+  document.querySelector(".root").classList.add("copied");
+  document.querySelector("canvas").toBlob(function(blob) {
+    writeToClipboard(blob);
+  }, "image/png");
+
+  setTimeout(() => {
+    document.querySelector(".root").classList.remove("copied");
+  }, 100);
+};
+
 export default {
   mounted() {
     this.$el.appendChild(renderer.view);
@@ -174,6 +213,10 @@ html,
 .root {
   height: 100%;
 }
+.root.copied {
+  background: #666;
+}
+
 body {
   background: #333;
   margin: 0;
