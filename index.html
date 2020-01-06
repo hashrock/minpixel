@@ -3,6 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <title>minpixel</title>
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <script>
+      window.addEventListener("load", function() {
+        if ("serviceWorker" in navigator) {
+          navigator.serviceWorker.register("/serviceWorker.js");
+        }
+      });
+    </script>
   </head>
   <body>
     <div id="app"></div>

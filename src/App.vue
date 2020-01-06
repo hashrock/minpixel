@@ -1,5 +1,5 @@
 <template>
-  <div></div>
+  <div class="root"></div>
 </template>
 
 <script lang="ts">
@@ -147,6 +147,20 @@ function animate() {
   requestAnimationFrame(animate);
 }
 
+resize();
+function resize() {
+  if (window.innerWidth / window.innerHeight >= 1) {
+    var w = window.innerHeight * 1;
+    var h = window.innerHeight;
+  } else {
+    var w = window.innerWidth;
+    var h = window.innerWidth / 1;
+  }
+  renderer.view.style.width = w + "px";
+  renderer.view.style.height = h + "px";
+}
+window.onresize = resize;
+
 export default {
   mounted() {
     this.$el.appendChild(renderer.view);
@@ -155,4 +169,22 @@ export default {
 </script>
 
 <style>
+body,
+html,
+.root {
+  height: 100%;
+}
+body {
+  background: #333;
+  margin: 0;
+}
+.root {
+  display: flex;
+  box-sizing: border-box;
+  justify-content: center;
+}
+canvas {
+  width: 100%;
+  display: inline-block;
+}
 </style>
